@@ -50,21 +50,24 @@ define_function(unpack)
 
       if(!mz_zip_reader_init_mem(&zip, buffer, module_context->file_size, 0))
       { //Error: Could not init File from Memory
+    	//printf("Error: Could not init File from Memory\n");
         mz_zip_reader_end(&zip);
-        return_integer(UNDEFINED);
+        return_integer(YR_UNDEFINED);
       }
 
       int file_index = mz_zip_reader_locate_file(&zip, file_name, 0, 0);
       if (file_index < 0)
       { //Error: Could not find File
+    	//printf("Error: Could not find File\n");
         mz_zip_reader_end(&zip);
-        return_integer(UNDEFINED);
+        return_integer(YR_UNDEFINED);
       }
 
       if (!mz_zip_reader_file_stat(&zip, file_index, &stat))
       { //Error: Could not read Status
+    	//printf("Error: Could not read Status\n");
         mz_zip_reader_end(&zip);
-        return_integer(UNDEFINED);
+        return_integer(YR_UNDEFINED);
       }
 
       if (stat.m_uncomp_size<100*1024*1024)
@@ -72,18 +75,20 @@ define_function(unpack)
         void *p = mz_zip_reader_extract_to_heap(&zip, file_index, &size, 0);
         if (!p) //Error: Could not read File to Heap
         {
+    	  //printf("Error: Could not read File to Heap\n");
           mz_zip_reader_end(&zip);
-          return_integer(UNDEFINED);
+          return_integer(YR_UNDEFINED);
         }
         else
         {
-          char *result = strstr(p, search_string);
+          char *result = memmem(p, size, search_string, strlen(search_string));
+    	  //printf("Error: eeeeeeee %d %s %s %s\n", size, p, search_string, result);
           if(result != NULL)
             return_integer((void*)result-p);
         }
       }
     }
-    return_integer(UNDEFINED);
+    return_integer(YR_UNDEFINED);
 }
 
 begin_declarations;
