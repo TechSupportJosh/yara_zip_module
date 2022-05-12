@@ -82,7 +82,7 @@ define_function(unpack)
         else
         {
           char *result = memmem(p, size, search_string, strlen(search_string));
-    	  //printf("Error: eeeeeeee %d %s %s %s\n", size, p, search_string, result);
+    	  //printf("Debug: %d %s %s %s\n", size, p, search_string, result);
           if(result != NULL)
             return_integer((void*)result-p);
         }
